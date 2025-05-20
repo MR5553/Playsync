@@ -1,7 +1,8 @@
 import "dotenv/config";
 import app from "./app";
 import { Request, Response } from "express";
-
+import db from "./db/dbConfig";
+db();
 
 const { PORT } = process.env || 8000;
 
