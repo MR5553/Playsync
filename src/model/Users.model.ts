@@ -1,6 +1,8 @@
 import { model, Schema } from "mongoose";
 import { userType } from "src/types/user.types";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { jwtToken } from "src/types/jwt.types";
 
 const userSchema = new Schema<userType>({
     profileInfo: {
@@ -114,6 +116,34 @@ userSchema.pre<userType>("save", async function (next) {
 
 userSchema.methods.IsPasswordCorrect = async function (password: string) {
     return await bcrypt.compare(password, this.profileInfo.password);
-}
+};
+
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.profile_info.email,
+            username: this.profile_info.username,
+        } as jwtToken,
+        process.env.ACCESS_TOKEN_SECRET!,
+        {
+            expiresIn: "3d"
+        }
+    )
+};
+
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id,
+            email: this.profile_info.email,
+            username: this.profile_info.username,
+        } as jwtToken,
+        process.env.REFRESH_TOKEN_SECRET!,
+        {
+            expiresIn: "7d"
+        }
+    )
+};
 
 export const Users = model<userType>("Users", userSchema);
