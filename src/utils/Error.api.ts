@@ -5,13 +5,13 @@ export class apiError extends Error {
     Errors: unknown[];
     constructor(
         status: number,
-        message: "Something went wrong!",
+        message: string,
         Errors: unknown[] = [],
         stack = ""
     ) {
         super(message)
         this.status = status
-        this.message = message;
+        this.message = "Something went wrong!";
         this.success = false
         this.Errors = Errors
 
