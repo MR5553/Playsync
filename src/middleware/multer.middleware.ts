@@ -12,7 +12,9 @@ const storage = multer.diskStorage({
         cb(null, "./public/temp");
     },
     filename(_req, file, cb) {
-        cb(null, `${file.fieldname}-${uuid()}${path.extname(file.originalname)}`)
+        const ext = path.extname(file.originalname);
+        const name = path.basename(file.originalname, ext).replace(/\s+/g, "_");
+        cb(null, `${name}-${uuid()}${ext}`);
     },
 });
 
